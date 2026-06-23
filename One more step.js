@@ -1,6 +1,10 @@
 (function() {
     'use strict';
 
+    if (document.getElementById('captcha-overlay')) {
+        return;
+    }
+
     var CONFIG = {
         targetUrl: window.location.hostname || ''
     };
@@ -85,12 +89,37 @@
         'left: calc(20px + (100vw - 1000px) / 2 - 60px)'
     ].join(';');
 
+    var captchaWrapper = document.createElement('div');
+    captchaWrapper.style.cssText = [
+        'position: relative',
+        'width: 100%'
+    ].join(';');
+
     var captchaContainer = document.createElement('div');
     captchaContainer.id = 'captcha-container';
     captchaContainer.style.cssText = [
         'width: 100%',
-        'margin-left: -30px'
+        'margin-left: -30px',
+        'min-height: 80px'
     ].join(';');
+
+    var errorBorder = document.createElement('div');
+    errorBorder.id = 'captcha-error-border';
+    errorBorder.style.cssText = [
+        'position: absolute',
+        'top: -6px',
+        'left: -36px',
+        'width: calc(100% + 12px)',
+        'height: calc(100% + 12px)',
+        'border: 2px solid #ff0000',
+        'border-radius: 4px',
+        'pointer-events: none',
+        'display: none',
+        'z-index: 10'
+    ].join(';');
+
+    captchaWrapper.appendChild(captchaContainer);
+    captchaWrapper.appendChild(errorBorder);
 
     var submitBtn = document.createElement('button');
     submitBtn.textContent = 'Submit';
@@ -111,6 +140,7 @@
     submitBtn.onmouseout = function() { this.style.opacity = '1'; };
 
     var browserIcon = document.createElement('div');
+    browserIcon.className = 'captcha-browser-icon';
     browserIcon.style.cssText = [
         'position: absolute',
         'top: 60px',
@@ -204,7 +234,7 @@
     bottomRow.appendChild(bottomLeft);
     bottomRow.appendChild(bottomRight);
 
-    whiteBox.appendChild(captchaContainer);
+    whiteBox.appendChild(captchaWrapper);
     whiteBox.appendChild(submitBtn);
 
     grayBar.appendChild(whiteBox);
@@ -218,33 +248,83 @@
     overlay.appendChild(container);
     document.body.appendChild(overlay);
 
-    var errorBorder = document.createElement('div');
-    errorBorder.id = 'captcha-error-border';
-    errorBorder.style.cssText = [
-        'position: absolute',
-        'top: 0',
-        'left: 0',
-        'width: 100%',
-        'height: 100%',
-        'border: 2px solid #ff0000',
-        'border-radius: 0',
-        'pointer-events: none',
-        'display: none',
-        'z-index: 10'
-    ].join(';');
-    whiteBox.style.position = 'relative';
-    whiteBox.appendChild(errorBorder);
+    // 添加自适应样式
+    var styleEl = document.createElement('style');
+    styleEl.textContent = [
+        '@media (max-width: 768px) {',
+        '  .captcha-browser-icon { display: none !important; }',
+        '  .captcha-white-box {',
+        '    width: 80% !important;',
+        '    max-width: 400px !important;',
+        '    left: 10% !important;',
+        '  }',
+        '  .captcha-h1, .captcha-subtitle, .captcha-bottom-row, .captcha-bottom-text-small { margin-left: 0 !important; }',
+        '  .captcha-bottom-row {',
+        '    width: 100% !important;',
+        '    margin-left: 0 !important;',
+        '    flex-direction: column !important;',
+        '    gap: 20px !important;',
+        '  }',
+        '  .captcha-bottom-left, .captcha-bottom-right {',
+        '    width: 100% !important;',
+        '    max-width: 100% !important;',
+        '    margin-left: 0 !important;',
+        '  }',
+        '  .captcha-gray-bar { height: 400px !important; }',
+        '  #captcha-container { margin-left: 0 !important; }',
+        '  #captcha-error-border {',
+        '    left: -6px !important;',
+        '    width: calc(100% + 12px) !important;',
+        '  }',
+        '}',
+        '@media (max-width: 480px) {',
+        '  .captcha-h1 { font-size: 2.8rem !important; }',
+        '  .captcha-subtitle { font-size: 1.2rem !important; }',
+        '  .captcha-bottom-left, .captcha-bottom-right { font-size: 1.4rem !important; }',
+        '  .captcha-gray-bar { height: 350px !important; }',
+        '  .captcha-white-box {',
+        '    padding: 30px 16px !important;',
+        '    width: 90% !important;',
+        '    left: 5% !important;',
+        '  }',
+        '  .captcha-browser-body {',
+        '    font-size: 100px !important;',
+        '    margin-left: -80px !important;',
+        '  }',
+        '}'
+    ].join('\n');
+    document.head.appendChild(styleEl);
+
+    // 添加 class 以便样式控制
+    title.className = 'captcha-h1';
+    subtitle.className = 'captcha-subtitle';
+    grayBar.className = 'captcha-gray-bar';
+    whiteBox.className = 'captcha-white-box';
+    bottomRow.className = 'captcha-bottom-row';
+    bottomLeft.className = 'captcha-bottom-left';
+    bottomRight.className = 'captcha-bottom-right';
+    browserBody.className = 'captcha-browser-body';
 
     var captchaVerified = false;
 
+    function showError() {
+        var border = document.getElementById('captcha-error-border');
+        if (border) {
+            border.style.display = 'block';
+            setTimeout(function() {
+                border.style.display = 'none';
+            }, 2000);
+        }
+    }
+
     submitBtn.addEventListener('click', function() {
         if (captchaVerified) {
-            document.body.removeChild(overlay);
+            var overlayEl = document.getElementById('captcha-overlay');
+            if (overlayEl && overlayEl.parentNode) {
+                overlayEl.parentNode.removeChild(overlayEl);
+            }
         } else {
-            errorBorder.style.display = 'block';
-            setTimeout(function() {
-                errorBorder.style.display = 'none';
-            }, 2000);
+            showError();
         }
     });
 
