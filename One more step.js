@@ -1,10 +1,6 @@
 (function() {
     'use strict';
 
-    if (document.getElementById('captcha-overlay')) {
-        return;
-    }
-
     var CONFIG = {
         targetUrl: window.location.hostname || ''
     };
@@ -95,30 +91,6 @@
         'width: 100%',
         'margin-left: -30px'
     ].join(';');
-
-    var captchaWrapper = document.createElement('div');
-    captchaWrapper.style.cssText = [
-        'position: relative',
-        'display: inline-block',
-        'width: 100%'
-    ].join(';');
-    captchaWrapper.appendChild(captchaContainer);
-
-    var errorBorder = document.createElement('div');
-    errorBorder.id = 'captcha-error-border';
-    errorBorder.style.cssText = [
-        'position: absolute',
-        'top: -4px',
-        'left: -4px',
-        'width: calc(100% + 8px)',
-        'height: calc(100% + 8px)',
-        'border: 2px solid #ff0000',
-        'border-radius: 0',
-        'pointer-events: none',
-        'display: none',
-        'z-index: 10'
-    ].join(';');
-    captchaWrapper.appendChild(errorBorder);
 
     var submitBtn = document.createElement('button');
     submitBtn.textContent = 'Submit';
@@ -232,7 +204,7 @@
     bottomRow.appendChild(bottomLeft);
     bottomRow.appendChild(bottomRight);
 
-    whiteBox.appendChild(captchaWrapper);
+    whiteBox.appendChild(captchaContainer);
     whiteBox.appendChild(submitBtn);
 
     grayBar.appendChild(whiteBox);
@@ -246,14 +218,28 @@
     overlay.appendChild(container);
     document.body.appendChild(overlay);
 
+    var errorBorder = document.createElement('div');
+    errorBorder.id = 'captcha-error-border';
+    errorBorder.style.cssText = [
+        'position: absolute',
+        'top: 0',
+        'left: 0',
+        'width: 100%',
+        'height: 100%',
+        'border: 2px solid #ff0000',
+        'border-radius: 0',
+        'pointer-events: none',
+        'display: none',
+        'z-index: 10'
+    ].join(';');
+    whiteBox.style.position = 'relative';
+    whiteBox.appendChild(errorBorder);
+
     var captchaVerified = false;
 
     submitBtn.addEventListener('click', function() {
         if (captchaVerified) {
-            var overlayEl = document.getElementById('captcha-overlay');
-            if (overlayEl && overlayEl.parentNode) {
-                overlayEl.parentNode.removeChild(overlayEl);
-            }
+            document.body.removeChild(overlay);
         } else {
             errorBorder.style.display = 'block';
             setTimeout(function() {
