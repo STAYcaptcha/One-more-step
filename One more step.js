@@ -29,13 +29,13 @@
             padding-top: 1.25rem;
             overflow: hidden;
         }
-        #stay-captcha-overlay .container {
+        .container {
             width: 100%;
             max-width: 1000px;
             padding: 0 20px 40px 20px;
             position: relative;
         }
-        #stay-captcha-overlay h1 {
+        h1 {
             font-weight: 300;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 4.5rem;
@@ -44,7 +44,7 @@
             text-align: left;
             margin-left: -60px;
         }
-        #stay-captcha-overlay p {
+        p {
             font-weight: 300;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 1.6rem;
@@ -53,7 +53,7 @@
             text-align: left;
             margin-left: -60px;
         }
-        #stay-captcha-overlay .gray-bar {
+        .gray-bar {
             width: 100vw;
             height: 500px;
             background-color: #e0e0e0;
@@ -62,7 +62,7 @@
             border-radius: 0;
             position: relative;
         }
-        #stay-captcha-overlay .white-box {
+        .white-box {
             background-color: #ffffff;
             border-radius: 0;
             padding: 50px 30px;
@@ -77,16 +77,16 @@
             top: 60px;
             left: calc(20px + (100vw - 1000px) / 2 - 60px);
         }
-        #stay-captcha-overlay #captcha-container {
+        #captcha-container {
             display: inline-block;
             width: 420px;
             margin-left: 0;
         }
-        #stay-captcha-overlay #captcha-container.error {
+        #captcha-container.error {
             outline: 2px solid #ff0000;
             outline-offset: 0px;
         }
-        #stay-captcha-overlay .submit-btn {
+        .submit-btn {
             background-color: #e0e0e0;
             color: #000000;
             border: 1px solid #000000;
@@ -98,10 +98,10 @@
             margin-top: 20px;
             align-self: flex-start;
         }
-        #stay-captcha-overlay .submit-btn:hover {
+        .submit-btn:hover {
             opacity: 0.8;
         }
-        #stay-captcha-overlay .browser-icon {
+        .browser-icon {
             position: absolute;
             top: 60px;
             right: -40px;
@@ -115,7 +115,7 @@
             justify-content: center;
             overflow: hidden;
         }
-        #stay-captcha-overlay .browser-bar {
+        .browser-bar {
             width: 100%;
             height: 40px;
             background-color: #f0f0f0;
@@ -126,22 +126,22 @@
             gap: 10px;
             flex-shrink: 0;
         }
-        #stay-captcha-overlay .browser-dot {
+        .browser-dot {
             width: 14px;
             height: 14px;
             border-radius: 50%;
             background-color: #e0e0e0;
         }
-        #stay-captcha-overlay .browser-dot:nth-child(1) {
+        .browser-dot:nth-child(1) {
             background-color: #ff5f57;
         }
-        #stay-captcha-overlay .browser-dot:nth-child(2) {
+        .browser-dot:nth-child(2) {
             background-color: #ffbd2e;
         }
-        #stay-captcha-overlay .browser-dot:nth-child(3) {
+        .browser-dot:nth-child(3) {
             background-color: #28c840;
         }
-        #stay-captcha-overlay .browser-body {
+        .browser-body {
             flex: 1;
             display: flex;
             align-items: center;
@@ -151,14 +151,14 @@
             font-size: 160px;
             margin-left: -160px;
         }
-        #stay-captcha-overlay .bottom-row {
+        .bottom-row {
             display: flex;
             align-items: flex-start;
             margin-top: 1rem;
             margin-left: -60px;
             width: calc(100% + 120px);
         }
-        #stay-captcha-overlay .bottom-left {
+        .bottom-left {
             font-weight: 400;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 2rem;
@@ -167,7 +167,7 @@
             width: 50%;
             max-width: 500px;
         }
-        #stay-captcha-overlay .bottom-right {
+        .bottom-right {
             font-weight: 400;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 2rem;
@@ -177,7 +177,7 @@
             max-width: 500px;
             margin-left: auto;
         }
-        #stay-captcha-overlay .bottom-text-small {
+        .bottom-text-small {
             font-weight: 400;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 1rem;
@@ -186,43 +186,43 @@
             margin-top: 0.5rem;
             width: 100%;
         }
-        #stay-captcha-overlay .site-url {
+        .site-url {
             color: #1a1a1a;
             font-weight: 400;
         }
         @media (max-width: 768px) {
-            #stay-captcha-overlay .browser-icon {
+            .browser-icon {
                 display: none !important;
             }
-            #stay-captcha-overlay .white-box {
+            .white-box {
                 width: 80%;
                 max-width: 80%;
                 left: 10%;
             }
-            #stay-captcha-overlay h1 {
+            h1 {
                 margin-left: 0;
                 font-size: 3rem;
             }
-            #stay-captcha-overlay p {
+            p {
                 margin-left: 0;
                 font-size: 1.2rem;
             }
-            #stay-captcha-overlay .bottom-row {
+            .bottom-row {
                 flex-direction: column;
                 margin-left: 0;
                 width: 100%;
             }
-            #stay-captcha-overlay .bottom-left {
+            .bottom-left {
                 width: 100%;
                 max-width: 100%;
             }
-            #stay-captcha-overlay .bottom-right {
+            .bottom-right {
                 width: 100%;
                 max-width: 100%;
                 margin-left: 0;
                 margin-top: 1rem;
             }
-            #stay-captcha-overlay .bottom-text-small {
+            .bottom-text-small {
                 width: 100%;
                 max-width: 100%;
             }
