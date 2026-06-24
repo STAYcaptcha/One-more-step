@@ -1,8 +1,6 @@
 (function() {
-    // 获取当前网站域名
     var siteUrl = window.location.hostname || '';
 
-    // 创建样式
     var style = document.createElement('style');
     style.textContent = `
         * {
@@ -11,6 +9,11 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
         }
         #stay-captcha-overlay {
             position: fixed;
@@ -21,9 +24,10 @@
             background-color: #ffffff;
             z-index: 999999;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding-top: 1.25rem;
+            overflow: hidden;
         }
         #stay-captcha-overlay .container {
             width: 100%;
@@ -33,6 +37,7 @@
         }
         #stay-captcha-overlay h1 {
             font-weight: 300;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 4.5rem;
             color: #1a1a1a;
             margin: 0;
@@ -41,6 +46,7 @@
         }
         #stay-captcha-overlay p {
             font-weight: 300;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 1.6rem;
             color: #888888;
             margin: 1rem 0 0 0;
@@ -87,6 +93,7 @@
             border-radius: 0;
             padding: 4px 14px;
             font-size: 0.75rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             cursor: pointer;
             margin-top: 20px;
             align-self: flex-start;
@@ -153,6 +160,7 @@
         }
         #stay-captcha-overlay .bottom-left {
             font-weight: 400;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 2rem;
             color: #000000;
             text-align: left;
@@ -161,6 +169,7 @@
         }
         #stay-captcha-overlay .bottom-right {
             font-weight: 400;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 2rem;
             color: #000000;
             text-align: left;
@@ -170,6 +179,7 @@
         }
         #stay-captcha-overlay .bottom-text-small {
             font-weight: 400;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 1rem;
             color: #000000;
             text-align: left;
@@ -220,7 +230,6 @@
     `;
     document.head.appendChild(style);
 
-    // 创建覆盖层 HTML
     var overlay = document.createElement('div');
     overlay.id = 'stay-captcha-overlay';
     overlay.innerHTML = `
@@ -256,7 +265,6 @@
     `;
     document.body.appendChild(overlay);
 
-    // 加载 StayCaptcha SDK
     var script = document.createElement('script');
     script.src = 'https://staycaptcha.github.io/Captcha/stay-captcha.js';
     script.onload = function() {
@@ -278,7 +286,6 @@
             if (!verified) {
                 document.getElementById('captcha-container').classList.add('error');
             } else {
-                // 验证成功，移除覆盖层
                 var overlayEl = document.getElementById('stay-captcha-overlay');
                 if (overlayEl) {
                     overlayEl.remove();
@@ -288,7 +295,6 @@
     };
     document.head.appendChild(script);
 
-    // 禁用右键、复制、选择
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
     document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
     document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
