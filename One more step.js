@@ -1,342 +1,295 @@
 (function() {
-    var verified = false;
-    var targetUrl = window.location.hostname || '';
+    // 获取当前网站域名
+    var siteUrl = window.location.hostname || '';
 
-    function injectStyles() {
-        var style = document.createElement('style');
-        style.textContent = `
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                user-select: none;
-                -webkit-user-select: none;
+    // 创建样式
+    var style = document.createElement('style');
+    style.textContent = `
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        #stay-captcha-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        #stay-captcha-overlay .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 0 20px 40px 20px;
+            position: relative;
+        }
+        #stay-captcha-overlay h1 {
+            font-weight: 300;
+            font-size: 4.5rem;
+            color: #1a1a1a;
+            margin: 0;
+            text-align: left;
+            margin-left: -60px;
+        }
+        #stay-captcha-overlay p {
+            font-weight: 300;
+            font-size: 1.6rem;
+            color: #888888;
+            margin: 1rem 0 0 0;
+            text-align: left;
+            margin-left: -60px;
+        }
+        #stay-captcha-overlay .gray-bar {
+            width: 100vw;
+            height: 500px;
+            background-color: #e0e0e0;
+            margin-top: 2rem;
+            margin-left: calc(-50vw + 50%);
+            border-radius: 0;
+            position: relative;
+        }
+        #stay-captcha-overlay .white-box {
+            background-color: #ffffff;
+            border-radius: 0;
+            padding: 50px 30px;
+            width: 50%;
+            max-width: 500px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            position: absolute;
+            top: 60px;
+            left: calc(20px + (100vw - 1000px) / 2 - 60px);
+        }
+        #stay-captcha-overlay #captcha-container {
+            display: inline-block;
+            width: 420px;
+            margin-left: 0;
+        }
+        #stay-captcha-overlay #captcha-container.error {
+            outline: 2px solid #ff0000;
+            outline-offset: 0px;
+        }
+        #stay-captcha-overlay .submit-btn {
+            background-color: #e0e0e0;
+            color: #000000;
+            border: 1px solid #000000;
+            border-radius: 0;
+            padding: 4px 14px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 20px;
+            align-self: flex-start;
+        }
+        #stay-captcha-overlay .submit-btn:hover {
+            opacity: 0.8;
+        }
+        #stay-captcha-overlay .browser-icon {
+            position: absolute;
+            top: 60px;
+            right: -40px;
+            width: 50%;
+            height: calc(100% - 60px);
+            background-color: #ffffff;
+            border-radius: 12px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #stay-captcha-overlay .browser-bar {
+            width: 100%;
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #stay-captcha-overlay .browser-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+        }
+        #stay-captcha-overlay .browser-dot:nth-child(1) {
+            background-color: #ff5f57;
+        }
+        #stay-captcha-overlay .browser-dot:nth-child(2) {
+            background-color: #ffbd2e;
+        }
+        #stay-captcha-overlay .browser-dot:nth-child(3) {
+            background-color: #28c840;
+        }
+        #stay-captcha-overlay .browser-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            background-color: #ffffff;
+            font-size: 160px;
+            margin-left: -160px;
+        }
+        #stay-captcha-overlay .bottom-row {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 1rem;
+            margin-left: -60px;
+            width: calc(100% + 120px);
+        }
+        #stay-captcha-overlay .bottom-left {
+            font-weight: 400;
+            font-size: 2rem;
+            color: #000000;
+            text-align: left;
+            width: 50%;
+            max-width: 500px;
+        }
+        #stay-captcha-overlay .bottom-right {
+            font-weight: 400;
+            font-size: 2rem;
+            color: #000000;
+            text-align: left;
+            width: 50%;
+            max-width: 500px;
+            margin-left: auto;
+        }
+        #stay-captcha-overlay .bottom-text-small {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #000000;
+            text-align: left;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+        #stay-captcha-overlay .site-url {
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+        @media (max-width: 768px) {
+            #stay-captcha-overlay .browser-icon {
+                display: none !important;
             }
-            html, body {
-                width: 100%;
-                height: 100%;
-                background-color: #ffffff;
-                overflow: hidden;
+            #stay-captcha-overlay .white-box {
+                width: 80%;
+                max-width: 80%;
+                left: 10%;
             }
-            #captcha-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background-color: #ffffff;
-                z-index: 999999;
-                display: flex;
-                align-items: flex-start;
-                justify-content: center;
-                padding-top: 1.25rem;
-                overflow: hidden;
+            #stay-captcha-overlay h1 {
+                margin-left: 0;
+                font-size: 3rem;
             }
-            #captcha-overlay .container {
-                width: 100%;
-                max-width: 1000px;
-                padding: 0 20px 40px 20px;
-                position: relative;
+            #stay-captcha-overlay p {
+                margin-left: 0;
+                font-size: 1.2rem;
             }
-            #captcha-overlay h1 {
-                font-weight: 300;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                font-size: 4.5rem;
-                color: #1a1a1a;
-                margin: 0;
-                text-align: left;
-                margin-left: -60px;
-            }
-            #captcha-overlay .sub-text {
-                font-weight: 300;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                font-size: 1.6rem;
-                color: #888888;
-                margin: 1rem 0 0 0;
-                text-align: left;
-                margin-left: -60px;
-            }
-            #captcha-overlay .gray-bar {
-                width: 100vw;
-                height: 500px;
-                background-color: #e0e0e0;
-                margin-top: 2rem;
-                margin-left: calc(-50vw + 50%);
-                border-radius: 0;
-                position: relative;
-            }
-            #captcha-overlay .white-box {
-                background-color: #ffffff;
-                border-radius: 0;
-                padding: 50px 30px;
-                width: 50%;
-                max-width: 500px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-                display: flex;
+            #stay-captcha-overlay .bottom-row {
                 flex-direction: column;
-                align-items: flex-start;
-                justify-content: center;
-                position: absolute;
-                top: 60px;
-                left: calc(20px + (100vw - 1000px) / 2 - 60px);
-            }
-            #captcha-overlay #captcha-container {
+                margin-left: 0;
                 width: 100%;
-                margin-left: -30px;
             }
-            #captcha-overlay #captcha-container.error {
-                outline: 2px solid #ff0000;
-                outline-offset: 4px;
-            }
-            #captcha-overlay .submit-btn {
-                background-color: #e0e0e0;
-                color: #000000;
-                border: 1px solid #000000;
-                border-radius: 0;
-                padding: 4px 14px;
-                font-size: 0.75rem;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                cursor: pointer;
-                margin-top: 20px;
-                align-self: flex-start;
-            }
-            #captcha-overlay .submit-btn:hover {
-                opacity: 0.8;
-            }
-            #captcha-overlay .browser-icon {
-                position: absolute;
-                top: 60px;
-                right: -40px;
-                width: 50%;
-                height: calc(100% - 60px);
-                background-color: #ffffff;
-                border-radius: 12px 0 0 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-            }
-            #captcha-overlay .browser-bar {
+            #stay-captcha-overlay .bottom-left {
                 width: 100%;
-                height: 40px;
-                background-color: #f0f0f0;
-                border-radius: 0;
-                display: flex;
-                align-items: center;
-                padding: 0 16px;
-                gap: 10px;
-                flex-shrink: 0;
+                max-width: 100%;
             }
-            #captcha-overlay .browser-dot {
-                width: 14px;
-                height: 14px;
-                border-radius: 50%;
-                background-color: #e0e0e0;
-            }
-            #captcha-overlay .browser-dot:nth-child(1) {
-                background-color: #ff5f57;
-            }
-            #captcha-overlay .browser-dot:nth-child(2) {
-                background-color: #ffbd2e;
-            }
-            #captcha-overlay .browser-dot:nth-child(3) {
-                background-color: #28c840;
-            }
-            #captcha-overlay .browser-body {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            #stay-captcha-overlay .bottom-right {
                 width: 100%;
-                background-color: #ffffff;
-                font-size: 160px;
-                margin-left: -160px;
-            }
-            #captcha-overlay .bottom-row {
-                display: flex;
-                align-items: flex-start;
+                max-width: 100%;
+                margin-left: 0;
                 margin-top: 1rem;
-                margin-left: -60px;
-                width: calc(100% + 120px);
             }
-            #captcha-overlay .bottom-left {
-                font-weight: 400;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                font-size: 2rem;
-                color: #000000;
-                text-align: left;
-                width: 50%;
-                max-width: 500px;
-            }
-            #captcha-overlay .bottom-right {
-                font-weight: 400;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                font-size: 2rem;
-                color: #000000;
-                text-align: left;
-                width: 50%;
-                max-width: 500px;
-                margin-left: auto;
-            }
-            #captcha-overlay .bottom-text-small {
-                font-weight: 400;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-                font-size: 1rem;
-                color: #000000;
-                text-align: left;
-                margin-top: 0.5rem;
+            #stay-captcha-overlay .bottom-text-small {
                 width: 100%;
+                max-width: 100%;
             }
-            #captcha-overlay .captcha-script {
-                display: none;
-            }
+        }
+    `;
+    document.head.appendChild(style);
 
-            @media (max-width: 768px) {
-                #captcha-overlay .browser-icon {
-                    display: none !important;
-                }
-                #captcha-overlay .white-box {
-                    width: 80%;
-                    max-width: 80%;
-                    left: 10%;
-                }
-                #captcha-overlay h1 {
-                    margin-left: 0;
-                    font-size: 3rem;
-                }
-                #captcha-overlay .sub-text {
-                    margin-left: 0;
-                    font-size: 1.2rem;
-                }
-                #captcha-overlay .bottom-row {
-                    flex-direction: column;
-                    margin-left: 0;
-                    width: 100%;
-                }
-                #captcha-overlay .bottom-left {
-                    width: 100%;
-                    max-width: 100%;
-                }
-                #captcha-overlay .bottom-right {
-                    width: 100%;
-                    max-width: 100%;
-                    margin-left: 0;
-                    margin-top: 1rem;
-                }
-                #captcha-overlay .bottom-text-small {
-                    width: 100%;
-                    max-width: 100%;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    function createOverlay() {
-        var overlay = document.createElement('div');
-        overlay.id = 'captcha-overlay';
-
-        var urlDisplay = targetUrl || '';
-
-        overlay.innerHTML = `
-            <div class="container">
-                <h1>One more step</h1>
-                <p class="sub-text">Please complete the security check to access ${urlDisplay}</p>
-                <div class="gray-bar">
-                    <div class="white-box">
-                        <div id="captcha-container"></div>
-                        <button class="submit-btn" id="submitBtn">Submit</button>
-                    </div>
-                    <div class="browser-icon">
-                        <div class="browser-bar">
-                            <div class="browser-dot"></div>
-                            <div class="browser-dot"></div>
-                            <div class="browser-dot"></div>
-                        </div>
-                        <div class="browser-body">⚠️</div>
-                    </div>
+    // 创建覆盖层 HTML
+    var overlay = document.createElement('div');
+    overlay.id = 'stay-captcha-overlay';
+    overlay.innerHTML = `
+        <div class="container">
+            <h1>One more step</h1>
+            <p>Please complete the security check to access <span class="site-url">${siteUrl}</span></p>
+            <div class="gray-bar">
+                <div class="white-box">
+                    <div id="captcha-container"></div>
+                    <button class="submit-btn" id="submitBtn">Submit</button>
                 </div>
-                <div class="bottom-row">
-                    <div class="bottom-left">
-                        Why do I have to complete a CAPTCHA?
-                        <div class="bottom-text-small">Completing the CAPTCHA proves you are a human and gives you temporary access to the web property.</div>
+                <div class="browser-icon">
+                    <div class="browser-bar">
+                        <div class="browser-dot"></div>
+                        <div class="browser-dot"></div>
+                        <div class="browser-dot"></div>
                     </div>
-                    <div class="bottom-right">
-                        What can I do to prevent this in the future?
-                        <div class="bottom-text-small">If you are on a personal connection, like at home, you can run an anti-virus scan on your device to make sure it is not infected with malware.</div>
-                        <div class="bottom-text-small">If you are at an office or shared network, you can ask the network administrator to run a scan across the network looking for</div>
-                    </div>
+                    <div class="browser-body">⚠️</div>
                 </div>
             </div>
-        `;
+            <div class="bottom-row">
+                <div class="bottom-left">
+                    Why do I have to complete a CAPTCHA?
+                    <div class="bottom-text-small">Completing the CAPTCHA proves you are a human and gives you temporary access to the web property.</div>
+                </div>
+                <div class="bottom-right">
+                    What can I do to prevent this in the future?
+                    <div class="bottom-text-small">If you are on a personal connection, like at home, you can run an anti-virus scan on your device to make sure it is not infected with malware.</div>
+                    <div class="bottom-text-small">If you are at an office or shared network, you can ask the network administrator to run a scan across the network looking for</div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
 
-        document.body.appendChild(overlay);
+    // 加载 StayCaptcha SDK
+    var script = document.createElement('script');
+    script.src = 'https://staycaptcha.github.io/Captcha/stay-captcha.js';
+    script.onload = function() {
+        var verified = false;
 
-        var script = document.createElement('script');
-        script.src = 'https://staycaptcha.github.io/Captcha/stay-captcha.js';
-        script.className = 'captcha-script';
-        document.body.appendChild(script);
-
-        script.onload = function() {
-            if (typeof STAYcaptcha !== 'undefined') {
-                STAYcaptcha.init({
-                    container: '#captcha-container',
-                    onSuccess: function() {
-                        verified = true;
-                        var container = document.getElementById('captcha-container');
-                        if (container) container.classList.remove('error');
-                    },
-                    onFail: function() {
-                        verified = false;
-                    }
-                });
+        STAYcaptcha.init({
+            container: '#captcha-container',
+            onSuccess: function() {
+                verified = true;
+                document.getElementById('captcha-container').classList.remove('error');
+            },
+            onFail: function() {
+                verified = false;
+                document.getElementById('captcha-container').classList.add('error');
             }
-        };
-
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        });
-
-        document.addEventListener('copy', function(e) {
-            e.preventDefault();
-            return false;
-        });
-
-        document.addEventListener('selectstart', function(e) {
-            e.preventDefault();
-            return false;
         });
 
         document.getElementById('submitBtn').addEventListener('click', function() {
             if (!verified) {
-                var container = document.getElementById('captcha-container');
-                if (container) container.classList.add('error');
+                document.getElementById('captcha-container').classList.add('error');
             } else {
-                var overlay = document.getElementById('captcha-overlay');
-                if (overlay) overlay.remove();
-                if (typeof window._captchaOnSuccess === 'function') {
-                    window._captchaOnSuccess();
+                // 验证成功，移除覆盖层
+                var overlayEl = document.getElementById('stay-captcha-overlay');
+                if (overlayEl) {
+                    overlayEl.remove();
                 }
             }
         });
-    }
-
-    function init() {
-        injectStyles();
-        createOverlay();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-    window.CaptchaSDK = {
-        onSuccess: function(callback) {
-            window._captchaOnSuccess = callback;
-        }
     };
+    document.head.appendChild(script);
+
+    // 禁用右键、复制、选择
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
 })();
