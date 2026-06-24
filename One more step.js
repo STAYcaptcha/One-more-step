@@ -15,14 +15,7 @@
             height: 100%;
             background-color: #ffffff;
         }
-        #stay-captcha-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 999999;
+        body {
             display: flex;
             align-items: flex-start;
             justify-content: center;
