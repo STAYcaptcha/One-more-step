@@ -83,6 +83,7 @@
         ].join(';');
 
         var whiteBox = document.createElement('div');
+        whiteBox.className = 'white-box';
         whiteBox.style.cssText = [
             'background-color: #ffffff',
             'border-radius: 0',
@@ -104,6 +105,7 @@
         container.style.cssText = [
             'display: inline-block',
             'width: 420px',
+            'max-width: 100%',
             'margin-left: 0'
         ].join(';');
 
@@ -130,6 +132,7 @@
         grayBar.appendChild(whiteBox);
 
         var browserIcon = document.createElement('div');
+        browserIcon.className = 'browser-icon';
         browserIcon.style.cssText = [
             'position: absolute',
             'top: 60px',
@@ -188,6 +191,7 @@
         grayBar.appendChild(browserIcon);
 
         var bottomRow = document.createElement('div');
+        bottomRow.className = 'bottom-row';
         bottomRow.style.cssText = [
             'display: flex',
             'align-items: flex-start',
@@ -197,6 +201,7 @@
         ].join(';');
 
         var bottomLeft = document.createElement('div');
+        bottomLeft.className = 'bottom-left';
         bottomLeft.style.cssText = [
             'font-weight: 400',
             'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
@@ -223,6 +228,7 @@
         bottomLeft.appendChild(leftSmall);
 
         var bottomRight = document.createElement('div');
+        bottomRight.className = 'bottom-right';
         bottomRight.style.cssText = [
             'font-weight: 400',
             'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
@@ -276,6 +282,9 @@
         var style = document.createElement('style');
         style.textContent = [
             '#stay-captcha-container.error { outline: 2px solid #ff0000; outline-offset: 0px; }',
+            '#stay-captcha-overlay .stay-captcha-container .white-box { width: 50%; max-width: 500px; }',
+            '#stay-captcha-overlay .stay-captcha-container .bottom-left { width: 50%; max-width: 500px; }',
+            '#stay-captcha-overlay .stay-captcha-container .bottom-right { width: 50%; max-width: 500px; }',
             '@media (max-width: 768px) {',
             '  #stay-captcha-overlay { overflow-y: auto; overflow-x: hidden; height: auto; min-height: 100vh; }',
             '  #stay-captcha-overlay .stay-captcha-container .browser-icon { display: none !important; }',
@@ -286,16 +295,18 @@
             '  #stay-captcha-overlay .stay-captcha-container .bottom-left { width: 100%; max-width: 100%; }',
             '  #stay-captcha-overlay .stay-captcha-container .bottom-right { width: 100%; max-width: 100%; margin-left: 0; margin-top: 1rem; }',
             '  #stay-captcha-overlay .stay-captcha-container .bottom-text-small { width: 100%; max-width: 100%; }',
+            '}',
+            '@media (max-width: 420px) {',
+            '  #stay-captcha-container { width: 100% !important; max-width: 100%; }',
+            '  #stay-captcha-overlay .stay-captcha-container .white-box { padding: 30px 15px; }',
             '}'
         ].join('');
         document.head.appendChild(style);
 
-        // 阻止右键、复制、选择
         overlay.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
         overlay.addEventListener('copy', function(e) { e.preventDefault(); return false; });
         overlay.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
 
-        // 初始化 StayCaptcha
         if (typeof STAYcaptcha !== 'undefined') {
             STAYcaptcha.init({
                 container: '#stay-captcha-container',
@@ -310,7 +321,6 @@
             });
         }
 
-        // Submit 按钮点击事件
         document.getElementById('stay-captcha-submit').addEventListener('click', function() {
             if (!verified) {
                 document.getElementById('stay-captcha-container').classList.add('error');
@@ -334,7 +344,6 @@
         }
     }
 
-    // 页面加载完成后自动显示
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', createOverlay);
     } else {
