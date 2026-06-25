@@ -282,9 +282,6 @@
         var style = document.createElement('style');
         style.textContent = [
             '#stay-captcha-container.error { outline: 2px solid #ff0000; outline-offset: 0px; }',
-            '#stay-captcha-overlay .stay-captcha-container .white-box { width: 50%; max-width: 500px; }',
-            '#stay-captcha-overlay .stay-captcha-container .bottom-left { width: 50%; max-width: 500px; }',
-            '#stay-captcha-overlay .stay-captcha-container .bottom-right { width: 50%; max-width: 500px; }',
             '@media (max-width: 768px) {',
             '  #stay-captcha-overlay { overflow-y: auto; overflow-x: hidden; height: auto; min-height: 100vh; }',
             '  #stay-captcha-overlay .stay-captcha-container .browser-icon { display: none !important; }',
